@@ -26,6 +26,13 @@ sys_wait(void)
   return wait();
 }
 
+int sys_wait_sleeping(void){
+    return wait_sleeping();
+}
+int sys_set_proc_tracer(void){
+    return set_proc_tracer();
+}
+
 int
 sys_kill(void)
 {

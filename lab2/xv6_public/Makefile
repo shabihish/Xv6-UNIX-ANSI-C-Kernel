@@ -185,9 +185,11 @@ UPROGS=\
 	_calculate_sum_of_digits\
 	_get_file_sectors\
 	_testgetparentpid\
+	_tracer_A\
+	_tracer_D\
 
 fs.img: mkfs README $(UPROGS)
-	./mkfs fs.img README file1 file2 file3 $(UPROGS)
+	./mkfs fs.img README file1 file2 $(UPROGS)
 
 -include *.d
 

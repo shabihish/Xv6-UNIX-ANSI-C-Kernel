@@ -198,6 +198,7 @@ fork(void)
   }
   np->sz = curproc->sz;
   np->parent = curproc;
+  np->tracer = 0;
   *np->tf = *curproc->tf;
 
   // Clear %eax so that fork returns 0 in the child.
@@ -533,4 +534,60 @@ procdump(void)
     }
     cprintf("\n");
   }
+}
+
+
+int
+wait_sleeping(void)
+{
+    struct proc *p;
+    int havekids, pid;
+    struct proc *curproc = myproc();
+
+    acquire(&ptable.lock);
+    for(;;){
+        // Scan through table looking for exited children.
+        havekids = 0;
+        for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+            if(p->tracer != curproc)
+                continue;
+            havekids = 1;
+            if(p->state == SLEEPING){
+                // Found one.
+                pid = p->pid;
+                release(&ptable.lock);
+                return pid;
+            }
+        }
+
+        // No point waiting if we don't have any children.
+        if(!havekids || curproc->killed){
+            release(&ptable.lock);
+            return -1;
+        }
+
+        // Wait for children to exit.  (See wakeup1 call in proc_exit.)
+        sleep(curproc, &ptable.lock);  //DOC: wait-sleep
+    }
+}
+
+int set_proc_tracer(void){
+    int pid;
+    if(argint(0, &pid)<0)
+        return -1;
+
+    struct proc* p;
+    acquire(&ptable.lock);
+
+    for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+        if(p->pid != pid)
+            continue;
+        if(!p->tracer){
+            p->tracer = myproc();
+            release(&ptable.lock);
+            return pid;
+        }
+    }
+    release(&ptable.lock);
+    return -1;
 }

@@ -450,7 +450,7 @@ sys_get_file_sectors(void){
     char* tmp;
     int n;
 
-    if(argfd(0, &fd, &f) < 0 || argint(2, &n)|| argptr(1, &tmp, n))
+    if(argfd(0, &fd, &f) < 0 || argint(2, &n)<0|| argptr(1, &tmp, n)<0)
         return -1;
     int* sectors = (int*) tmp;
 
