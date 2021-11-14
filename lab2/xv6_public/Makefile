@@ -184,7 +184,8 @@ UPROGS=\
 	_factor\
 	_calculate_sum_of_digits\
 	_get_file_sectors\
-	_testgetparentpid\
+	_test_get_parent_pid\
+	_get_parent_pid\
 
 fs.img: mkfs README $(UPROGS)
 	./mkfs fs.img README file1 file2 file3 $(UPROGS)
@@ -254,7 +255,8 @@ qemu-nox-gdb: fs.img xv6.img .gdbinit
 EXTRA=\
 	mkfs.c ulib.c user.h cat.c echo.c forktest.c grep.c kill.c\
 	ln.c ls.c mkdir.c rm.c stressfs.c usertests.c wc.c zombie.c\
-	_testgetparentpid\
+	printf.c umalloc.c test_get_parent_pid\
+	printf.c umalloc.c get_parent_pid\
 	printf.c umalloc.c calculate_sum_of_digits.c\
 	README dot-bochsrc *.pl toc.* runoff runoff1 runoff.list\
 	.gdbinit.tmpl gdbutil\
