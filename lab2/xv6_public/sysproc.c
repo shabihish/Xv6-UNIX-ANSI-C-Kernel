@@ -116,8 +116,7 @@ sys_uptime(void)
 }
 
 int
-sys_getparentpid(void)
-
+sys_get_parent_pid(void)
 {
 	return myproc()->parent->pid;
 }

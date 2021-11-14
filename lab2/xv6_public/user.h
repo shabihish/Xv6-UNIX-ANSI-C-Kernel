@@ -27,7 +27,7 @@ char* sbrk(int);
 int sleep(int);
 int uptime(void);
 int get_file_sectors(int fd, int* sectors, int n);
-int getparentpid(void);
+int get_parent_pid(void);
 
 // ulib.c
 int stat(const char*, struct stat*);

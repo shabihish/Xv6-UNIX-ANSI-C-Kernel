@@ -16,7 +16,7 @@ int main(void)
   	if(pid2 == 0)
   	{
   		printf(1,"second child pid is: %d\n", getpid());
-  		printf(1,"second child Parent pid is: %d\n", getparentpid());
+  		printf(1,"second child Parent pid is: %d\n", get_parent_pid());
   	}
   	else if(pid2 == -1)
   	{
@@ -27,14 +27,14 @@ int main(void)
   	{
   		wait();
   		printf(1,"first child pid is: %d\n", getpid());
-  		printf(1,"first child Parent pid is: %d\n", getparentpid());
+  		printf(1,"first child Parent pid is: %d\n", get_parent_pid());
   	}
   }
   else
   {
   	wait();
   	printf(1,"current process pid is: %d\n", getpid());
-  	printf(1,"current process Parent pid is: %d\n", getparentpid());
+  	printf(1,"current process Parent pid is: %d\n", get_parent_pid());
   }
   
   exit();
