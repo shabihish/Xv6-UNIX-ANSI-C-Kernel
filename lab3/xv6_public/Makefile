@@ -182,12 +182,9 @@ UPROGS=\
 	_wc\
 	_zombie\
 	_factor\
-	_calculate_sum_of_digits\
 	_set_HRRN_process_level\
 	_set_HRRN_system_level\
 	_get_file_sectors\
-	_tracer_A\
-	_tracer_D\
 	_test_get_parent_pid\
 	_get_parent_pid\
 	_get_proc_level\

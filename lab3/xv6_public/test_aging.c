@@ -13,6 +13,7 @@ int main(int argc, char *argv[]) {
         printf(1, "New pid: %d\n", getpid());
         for(;;);
     }else {
+        sleep(20);
         if (set_proc_queue_level(pid, 3) != -1)
             printf(1, "Successfully set PID %d's level to %d.\n", pid, get_proc_queue_level(pid));
         else
