@@ -1,4 +1,4 @@
-#include <stdlib.h>
+
 #include "types.h"
 #include "defs.h"
 #include "param.h"
@@ -354,7 +354,9 @@ void set_HRRN_process_level(int pid , int priority){
 }
 
 float get_HRRN_priority(struct proc* p){
-  clock_t current = clock();
+  acquire(&tickslock);
+  int current = ticks;
+  release(&tickslock);
   float waiting_time = (float)(current - p->arrival_time) / CLOCKS_PER_SEC;
   cprintf("waiting time : %f\n", waiting_time);
   float HRRN = (waiting_time + p->exec_cycle) / p->exec_cycle;
