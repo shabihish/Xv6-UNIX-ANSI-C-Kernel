@@ -183,6 +183,8 @@ UPROGS=\
 	_zombie\
 	_factor\
 	_calculate_sum_of_digits\
+	_set_HRRN_process_level\
+	_set_HRRN_system_level\
 	_get_file_sectors\
 	_tracer_A\
 	_tracer_D\
@@ -259,7 +261,7 @@ EXTRA=\
 	ln.c ls.c mkdir.c rm.c stressfs.c usertests.c wc.c zombie.c\
 	printf.c umalloc.c test_get_parent_pid\
 	printf.c umalloc.c get_parent_pid\
-	printf.c umalloc.c calculate_sum_of_digits.c\
+	printf.c umalloc.c calculate_sum_of_digits.c set_HRRN_process_level.c 	  set_HRRN_system_level.c\
 	README dot-bochsrc *.pl toc.* runoff runoff1 runoff.list\
 	.gdbinit.tmpl gdbutil\
 
