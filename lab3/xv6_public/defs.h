@@ -121,6 +121,7 @@ void            userinit(void);
 int             wait(void);
 void            wakeup(void*);
 void            yield(void);
+void            aging(void);
 int             wait_sleeping(void);
 int             set_proc_tracer(void);
 int             get_proc_queue_level(int);

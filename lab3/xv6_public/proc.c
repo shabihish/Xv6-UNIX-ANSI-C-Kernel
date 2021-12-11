@@ -418,11 +418,11 @@ struct proc* LCFS(){
 }
 
 
-void aging()
+void aging(void)
 {
   struct proc* p;
   for(p = ptable.proc; p != &ptable.proc[NPROC]; p++){
-      if(p -> state == RUNNABLE && p -> level == 2){
+      if(p -> state == RUNNABLE /*&& p -> level == 2*/){
           if(ticks - p->last_execution >= 8000)
           {
             p->level = 1;
@@ -430,7 +430,6 @@ void aging()
           }
       }
     }
-
 }
 
 void
@@ -449,8 +448,10 @@ scheduler(void)
      p = RR();
      if(p == 0)
        p = LCFS();
-     if(p == 0)
-       p = HRRN();
+     if(p == 0){
+//       p = HRRN();
+         release(&ptable.lock);
+          continue;}
      if(p == 0){
          release(&ptable.lock);
          continue;
@@ -527,9 +528,11 @@ sched(void)
 void
 yield(void)
 {
+//  cprintf("yield()\n");
   acquire(&ptable.lock);  //DOC: yieldlock
   myproc()->state = RUNNABLE;
   myproc()->exec_cycle += 1;
+  aging();
   sched();
   release(&ptable.lock);
 }
@@ -735,10 +738,13 @@ int set_proc_tracer(void){
 int get_proc_queue_level(int pid){
     struct proc* p;
 
-    for(p = ptable.proc; p != &ptable.proc[NPROC]; p++)
-        if(p->pid == pid)
+//    for(p = ptable.proc; p != &ptable.proc[NPROC]; p++) {
+//        cprintf("PID %d's level: %d\n", p->pid, p->level);
+//    }
+    for(p = ptable.proc; p != &ptable.proc[NPROC]; p++) {
+        if (p->pid == pid)
             return p->level;
-
+    }
     return -1;
 }
 
