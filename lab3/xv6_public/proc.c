@@ -88,6 +88,13 @@ allocproc(void)
 found:
   p->state = EMBRYO;
   p->pid = nextpid++;
+  p->level = 2;   // Default scheduling Q (LCFS)
+  p->exec_cycle = 1;
+  p->creation_time = clock();   // Inja error mide
+  srand(time(0));
+  p->HRRN_priority = rand() % 100;
+
+
 
   release(&ptable.lock);
 
@@ -322,6 +329,48 @@ wait(void)
 //  - swtch to start running that process
 //  - eventually that process transfers control
 //      via swtch back to the scheduler.
+
+void set_HRRN_only_once(int pid , int priority){
+  struct proc* p;
+
+  acquire(&ptable.lock);
+
+  for(p = ptable.proc; p != &ptable.proc[NPROC]; p++){
+    if(p->pid == pid){
+      p->HRRN_priority = priority;
+    }
+  }
+
+  release(&ptable.lock);
+
+}
+
+float get_HRRN_priority(struct proc* p){
+  clock_t current = clock();
+  float waiting_time = (float)(current - p->creation_time) / CLOCKS_PER_SEC;
+  cprintf("waiting time : %f\n", waiting_time);
+  float HRRN = (waiting_time + p->exec_cycle) / p->exec_cycle;
+  return (HRRN + p->HRRN_priority) / 2;
+}
+
+struct proc* HRRN(){
+    struct proc* p,* min_p;
+    float min_priority = get_HRRN_priority(ptable.proc);
+    min_p = ptable.proc;
+
+    for(p = ptable.proc; p != &ptable.proc[NPROC]; p++){
+      if(p -> state == RUNNABLE && p -> level == 3){
+        if(get_HRRN_priority(p) < min_priority){
+          min_priority = get_HRRN_priority(p);
+          min_p = p;
+        }
+      }
+    }
+    
+    return min_p;
+}
+
+
 void
 scheduler(void)
 {
@@ -335,24 +384,32 @@ scheduler(void)
 
     // Loop over process table looking for process to run.
     acquire(&ptable.lock);
-    for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
-      if(p->state != RUNNABLE)
-        continue;
 
-      // Switch to chosen process.  It is the process's job
-      // to release ptable.lock and then reacquire it
-      // before jumping back to us.
-      c->proc = p;
-      switchuvm(p);
-      p->state = RUNNING;
+    // p = Round_Robin();
+    // if(p == 0)
+    //   p = LCFS();
+    
 
-      swtch(&(c->scheduler), p->context);
-      switchkvm();
+    // if(p == 0)
+    //   p = HRRN();
 
-      // Process is done running for now.
-      // It should have changed its p->state before coming back.
-      c->proc = 0;
+    p = HRRN();
+    if(p == 0){   // Ptable is empty
+      release(&ptable.lock);
+      continue;
     }
+
+    c->proc = p;
+    switchuvm(p);
+    p->state = RUNNING;
+
+    swtch(&(c->scheduler), p->context);
+    switchkvm();
+
+    // Process is done running for now.
+    // It should have changed its p->state before coming back.
+    c->proc = 0;
+
     release(&ptable.lock);
 
   }
