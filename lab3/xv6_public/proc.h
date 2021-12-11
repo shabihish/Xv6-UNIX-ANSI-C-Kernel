@@ -56,6 +56,7 @@ struct proc {
   int level;
   int HRRN_priority;
   int exec_cycle;
+  int RR_priority;
 };
 
 // Process memory is laid out contiguously, low addresses first:

@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include "types.h"
 #include "defs.h"
 #include "param.h"
@@ -15,6 +16,8 @@ struct {
 static struct proc *initproc;
 
 int nextpid = 1;
+int next_RR_priority = 0;
+
 extern void forkret(void);
 extern void trapret(void);
 
@@ -91,10 +94,14 @@ found:
   p->level = 2;   // Default scheduling Q (LCFS)
   p->exec_cycle = 1;
   p->creation_time = clock();   // Inja error mide
+
+  // HRRN queue initialization
   srand(time(0));
   p->HRRN_priority = rand() % 100;
 
-
+  // RR queue initialization
+  p->RR_priority = next_RR_priority;
+  next_RR_priority++;
 
   release(&ptable.lock);
 
@@ -370,6 +377,26 @@ struct proc* HRRN(){
     return min_p;
 }
 
+struct proc* RR(){
+    struct proc* p,* min_p;
+    int min_priority = ptable.proc->RR_priority, max_priority = min_priority;
+    min_p = ptable.proc;
+
+    for(p = ptable.proc; p != &ptable.proc[NPROC]; p++){
+        if(p -> state == RUNNABLE && p -> level == 1){
+            if(p->RR_priority < min_priority){
+                min_priority = p->RR_priority;
+                min_p = p;
+            }
+            if(p->RR_priority > max_priority){
+                max_priority = p->RR_priority;
+            }
+        }
+    }
+    p->RR_priority = max_priority + 1;
+
+    return min_p;
+}
 
 void
 scheduler(void)
@@ -385,10 +412,10 @@ scheduler(void)
     // Loop over process table looking for process to run.
     acquire(&ptable.lock);
 
-    // p = Round_Robin();
+     p = RR();
     // if(p == 0)
     //   p = LCFS();
-    
+
 
     // if(p == 0)
     //   p = HRRN();
