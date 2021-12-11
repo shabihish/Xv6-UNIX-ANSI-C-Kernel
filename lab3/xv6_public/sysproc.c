@@ -61,6 +61,16 @@ int sys_calculate_sum_of_digits(void){
   return result;
 }
 
+void 
+sys_set_HRRN_process_level(int pid, int priority){
+  set_HRRN_process_level(pid, priority);
+}
+
+void 
+sys_set_HRRN_system_level(int priority){
+  set_HRRN_system_level(priority);
+}
+
 int
 sys_getpid(void)
 {
