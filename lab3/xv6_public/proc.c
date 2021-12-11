@@ -1,4 +1,3 @@
-
 #include "types.h"
 #include "defs.h"
 #include "param.h"
@@ -357,7 +356,7 @@ float get_HRRN_priority(struct proc* p){
   acquire(&tickslock);
   int current = ticks;
   release(&tickslock);
-  float waiting_time = (float)(current - p->arrival_time) / CLOCKS_PER_SEC;
+  float waiting_time = (float)(current - p->arrival_time);
   cprintf("waiting time : %f\n", waiting_time);
   float HRRN = (waiting_time + p->exec_cycle) / p->exec_cycle;
   return (HRRN + p->HRRN_priority) / 2;
