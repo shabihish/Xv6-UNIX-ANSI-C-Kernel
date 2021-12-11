@@ -1,4 +1,3 @@
-#include <time.h>
 
 // Per-CPU state
 struct cpu {
