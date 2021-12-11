@@ -97,8 +97,8 @@ found:
   p->arrival_time = ticks;
   p->last_execution = 0;
   // HRRN queue initialization
-  srand(time(0));
-  p->HRRN_priority = rand() % 100;
+
+  p->HRRN_priority = ticks * 100; // default unique priority (will change in relevant syscall)
 
   // RR queue initialization
   p->RR_priority = next_RR_priority;
@@ -338,7 +338,7 @@ wait(void)
 //  - eventually that process transfers control
 //      via swtch back to the scheduler.
 
-void set_HRRN_only_once(int pid , int priority){
+void set_HRRN_process_level(int pid , int priority){
   struct proc* p;
 
   acquire(&ptable.lock);
@@ -355,7 +355,7 @@ void set_HRRN_only_once(int pid , int priority){
 
 float get_HRRN_priority(struct proc* p){
   clock_t current = clock();
-  float waiting_time = (float)(current - p->creation_time) / CLOCKS_PER_SEC;
+  float waiting_time = (float)(current - p->arrival_time) / CLOCKS_PER_SEC;
   cprintf("waiting time : %f\n", waiting_time);
   float HRRN = (waiting_time + p->exec_cycle) / p->exec_cycle;
   return (HRRN + p->HRRN_priority) / 2;
@@ -453,7 +453,8 @@ scheduler(void)
     //   p = HRRN();
 
     p = HRRN();
-    if(p == 0){   // Ptable is empty
+    if(p->pid == 0){   // first process (not from user)
+      cprintf("ZERO\n");
       release(&ptable.lock);
       continue;
     }
@@ -506,6 +507,7 @@ yield(void)
 {
   acquire(&ptable.lock);  //DOC: yieldlock
   myproc()->state = RUNNABLE;
+  myproc()->exec_cycle += 1;
   sched();
   release(&ptable.lock);
 }
