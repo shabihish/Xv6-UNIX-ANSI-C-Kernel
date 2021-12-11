@@ -1,4 +1,3 @@
-
 #include "types.h"
 #include "defs.h"
 #include "param.h"
@@ -41,10 +40,10 @@ struct cpu*
 mycpu(void)
 {
   int apicid, i;
-  
+
   if(readeflags()&FL_IF)
     panic("mycpu called with interrupts enabled\n");
-  
+
   apicid = lapicid();
   // APIC IDs are not guaranteed to be contiguous. Maybe we should have
   // a reverse map, or reserve a register to store &cpus[i].
@@ -73,6 +72,8 @@ myproc(void) {
 // If found, change state to EMBRYO and initialize
 // state required to run in the kernel.
 // Otherwise return 0.
+
+int first_time = 1;
 static struct proc*
 allocproc(void)
 {
@@ -91,7 +92,7 @@ allocproc(void)
 found:
   p->state = EMBRYO;
   p->pid = nextpid++;
-  p->level = 2;   // Default scheduling Q (LCFS)
+  p->level = 2;   // Default scheduling queue (LCFS)
   p->exec_cycle = 1;
   //p->creation_time = clock();   // Inja error mide
   p->arrival_time = ticks;
@@ -139,7 +140,7 @@ userinit(void)
   extern char _binary_initcode_start[], _binary_initcode_size[];
 
   p = allocproc();
-  
+
   initproc = p;
   if((p->pgdir = setupkvm()) == 0)
     panic("userinit: out of memory?");
@@ -153,6 +154,8 @@ userinit(void)
   p->tf->eflags = FL_IF;
   p->tf->esp = PGSIZE;
   p->tf->eip = 0;  // beginning of initcode.S
+  p->level = 2;
+    cprintf("init PID: %d \n", p->pid);
 
   safestrcpy(p->name, "initcode", sizeof(p->name));
   p->cwd = namei("/");
@@ -291,7 +294,7 @@ wait(void)
   struct proc *p;
   int havekids, pid;
   struct proc *curproc = myproc();
-  
+
   acquire(&ptable.lock);
   for(;;){
     // Scan through table looking for exited children.
@@ -357,16 +360,15 @@ float get_HRRN_priority(struct proc* p){
   acquire(&tickslock);
   int current = ticks;
   release(&tickslock);
-  float waiting_time = (float)(current - p->arrival_time) / CLOCKS_PER_SEC;
+  float waiting_time = (float)(current - p->arrival_time);
   cprintf("waiting time : %f\n", waiting_time);
   float HRRN = (waiting_time + p->exec_cycle) / p->exec_cycle;
   return (HRRN + p->HRRN_priority) / 2;
 }
 
 struct proc* HRRN(){
-    struct proc* p,* min_p;
-    float min_priority = get_HRRN_priority(ptable.proc);
-    min_p = ptable.proc;
+    struct proc* p,* min_p = 0;
+    float min_priority = 9999999;
 
     for(p = ptable.proc; p != &ptable.proc[NPROC]; p++){
       if(p -> state == RUNNABLE && p -> level == 3){
@@ -376,14 +378,12 @@ struct proc* HRRN(){
         }
       }
     }
-    
     return min_p;
 }
 
 struct proc* RR(){
-    struct proc* p,* min_p;
-    int min_priority = ptable.proc->RR_priority, max_priority = min_priority;
-    min_p = ptable.proc;
+    struct proc* p,*min_p = 0;
+    int min_priority = 9999999, max_priority = -1;
 
     for(p = ptable.proc; p != &ptable.proc[NPROC]; p++){
         if(p -> state == RUNNABLE && p -> level == 1){
@@ -396,7 +396,8 @@ struct proc* RR(){
             }
         }
     }
-    p->RR_priority = max_priority + 1;
+    if(min_p)
+        min_p->RR_priority = max_priority + 1;
 
     return min_p;
 }
@@ -429,7 +430,7 @@ void aging()
           }
       }
     }
-    
+
 }
 
 void
@@ -438,28 +439,47 @@ scheduler(void)
   struct proc *p;
   struct cpu *c = mycpu();
   c->proc = 0;
-  
+
   for(;;){
     // Enable interrupts on this processor.
     sti();
 
     // Loop over process table looking for process to run.
     acquire(&ptable.lock);
-
      p = RR();
-    // if(p == 0)
-    //   p = LCFS();
+     if(p == 0)
+       p = LCFS();
+     if(p == 0)
+       p = HRRN();
+     if(p == 0){
+         release(&ptable.lock);
+         continue;
+     }
+//    p = HRRN();
+//    if(p->pid == 0){   // first process (not from user)
+//      cprintf("ZERO\n");
+//      release(&ptable.lock);
+//      continue;
+//    }
+//      for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+//          if(p->state != RUNNABLE)
+//              continue;
+//
+//          // Switch to chosen process.  It is the process's job
+//          // to release ptable.lock and then reacquire it
+//          // before jumping back to us.
+//          c->proc = p;
+//          switchuvm(p);
+//          p->state = RUNNING;
+//
+//          swtch(&(c->scheduler), p->context);
+//          switchkvm();
+//
+//          // Process is done running for now.
+//          // It should have changed its p->state before coming back.
+//          c->proc = 0;
+//      }
 
-
-    // if(p == 0)
-    //   p = HRRN();
-
-    p = HRRN();
-    if(p->pid == 0){   // first process (not from user)
-      cprintf("ZERO\n");
-      release(&ptable.lock);
-      continue;
-    }
 
     c->proc = p;
     switchuvm(p);
@@ -541,7 +561,7 @@ void
 sleep(void *chan, struct spinlock *lk)
 {
   struct proc *p = myproc();
-  
+
   if(p == 0)
     panic("sleep");
 
