@@ -675,3 +675,23 @@ int set_proc_tracer(void){
     release(&ptable.lock);
     return -1;
 }
+
+int get_proc_queue_level(int pid){
+    struct proc* p;
+
+    for(p = ptable.proc; p != &ptable.proc[NPROC]; p++)
+        if(p->pid == pid)
+            return p->level;
+
+    return -1;
+}
+
+void set_proc_queue_level(int pid, int target_level){
+    struct proc* p;
+
+    for(p = ptable.proc; p != &ptable.proc[NPROC]; p++)
+        if(p->pid == pid){
+            p->level = target_level;
+            return;
+        }
+}

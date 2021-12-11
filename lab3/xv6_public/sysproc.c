@@ -120,3 +120,22 @@ sys_get_parent_pid(void)
 {
 	return myproc()->parent->pid;
 }
+
+int sys_get_proc_level(void){
+    int pid;
+    if(argint(0, &pid)<0)
+        return -1;
+    return get_proc_queue_level(pid);
+}
+
+int sys_set_proc_queue(void){
+    int pid, target_queue;
+    if(argint(0, &pid)<0 || pid<0)
+        return -1;
+
+    if(argint(1, &target_queue)<0 || target_queue<=0 || target_queue>3)
+        return -1;
+
+    set_proc_queue_level(pid, target_queue);
+    return 0;
+}

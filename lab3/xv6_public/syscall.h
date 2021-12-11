@@ -25,4 +25,6 @@
 #define SYS_get_parent_pid  24
 #define SYS_wait_sleeping  25
 #define SYS_set_proc_tracer  26
+#define SYS_get_proc_queue_level 27
+#define SYS_set_proc_queue_level 28
 

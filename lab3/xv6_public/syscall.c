@@ -108,7 +108,8 @@ extern int sys_get_file_sectors(void);
 extern int sys_wait_sleeping(void);
 extern int sys_set_proc_tracer(void);
 extern int sys_get_parent_pid(void);
-
+extern int sys_get_proc_level(void);
+extern int sys_set_proc_level(void);
 
 
 static int (*syscalls[])(void) = {
@@ -138,6 +139,8 @@ static int (*syscalls[])(void) = {
 [SYS_wait_sleeping] sys_wait_sleeping,
 [SYS_set_proc_tracer] sys_set_proc_tracer,
 [SYS_get_parent_pid] sys_get_parent_pid,
+[SYS_get_proc_queue_level] sys_get_proc_level,
+[SYS_set_proc_queue_level] sys_set_proc_level,
 };
 
 void

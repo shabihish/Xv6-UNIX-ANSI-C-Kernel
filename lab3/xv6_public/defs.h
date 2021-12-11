@@ -123,6 +123,9 @@ void            wakeup(void*);
 void            yield(void);
 int             wait_sleeping(void);
 int             set_proc_tracer(void);
+int             get_proc_queue_level(int);
+void            set_proc_queue_level(int, int);
+
 
 // swtch.S
 void            swtch(struct context**, struct context*);
