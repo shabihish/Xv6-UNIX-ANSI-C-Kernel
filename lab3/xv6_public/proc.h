@@ -1,3 +1,5 @@
+#include <time.h>
+
 // Per-CPU state
 struct cpu {
   uchar apicid;                // Local APIC ID
@@ -50,6 +52,10 @@ struct proc {
   struct file *ofile[NOFILE];  // Open files
   struct inode *cwd;           // Current directory
   char name[16];               // Process name (debugging)
+  clock_t creation_time;        // Problem here
+  int level;
+  int HRRN_priority;
+  int exec_cycle;
 };
 
 // Process memory is laid out contiguously, low addresses first:
