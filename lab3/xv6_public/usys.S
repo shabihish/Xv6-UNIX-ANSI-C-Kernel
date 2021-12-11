@@ -36,3 +36,6 @@ SYSCALL(wait_sleeping)
 SYSCALL(set_proc_tracer)
 SYSCALL(get_proc_queue_level)
 SYSCALL(set_proc_queue_level)
+SYSCALL(set_HRRN_process_level)
+SYSCALL(set_HRRN_system_level)
+

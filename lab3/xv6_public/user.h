@@ -13,6 +13,8 @@ int read(int, void*, int);
 int close(int);
 int kill(int);
 int calculate_sum_of_digits(void);
+void set_HRRN_process_level(int pid, int priority);
+void set_HRRN_system_level(int priority);
 int exec(char*, char**);
 int open(const char*, int);
 int mknod(const char*, short, short);

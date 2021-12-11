@@ -347,6 +347,7 @@ void set_HRRN_process_level(int pid , int priority){
   acquire(&ptable.lock);
 
   for(p = ptable.proc; p != &ptable.proc[NPROC]; p++){
+    //cprintf("pid : %d\n", p->pid);
     if(p->pid == pid){
       p->HRRN_priority = priority;
     }
@@ -355,6 +356,19 @@ void set_HRRN_process_level(int pid , int priority){
   release(&ptable.lock);
 
 }
+
+void set_HRRN_system_level(int priority){
+  struct proc* p;
+
+  acquire(&ptable.lock);
+  for(p = ptable.proc; p != &ptable.proc[NPROC]; p++){
+    //cprintf("change\n");
+    p->HRRN_priority = priority;
+  }
+
+  release(&ptable.lock);
+}
+
 
 float get_HRRN_priority(struct proc* p){
   acquire(&tickslock);

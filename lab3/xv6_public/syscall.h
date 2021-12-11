@@ -27,4 +27,7 @@
 #define SYS_set_proc_tracer  26
 #define SYS_get_proc_queue_level 27
 #define SYS_set_proc_queue_level 28
+#define SYS_set_HRRN_process_level 29
+#define SYS_set_HRRN_system_level 30
+
 
