@@ -57,6 +57,8 @@ struct proc {
   int HRRN_priority;
   int exec_cycle;
   int RR_priority;
+  int arrival_time;            /// for LCFS
+  int last_execution;          /// for aging
 };
 
 // Process memory is laid out contiguously, low addresses first:

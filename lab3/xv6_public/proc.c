@@ -93,8 +93,9 @@ found:
   p->pid = nextpid++;
   p->level = 2;   // Default scheduling Q (LCFS)
   p->exec_cycle = 1;
-  p->creation_time = clock();   // Inja error mide
-
+  //p->creation_time = clock();   // Inja error mide
+  p->arrival_time = ticks;
+  p->last_execution = 0;
   // HRRN queue initialization
   srand(time(0));
   p->HRRN_priority = rand() % 100;
@@ -398,6 +399,37 @@ struct proc* RR(){
     return min_p;
 }
 
+struct proc* LCFS(){
+  struct proc* p = 0 ,* latest_p = 0;
+  for(p = ptable.proc; p != &ptable.proc[NPROC]; p++){
+      if(p -> state == RUNNABLE && p -> level == 2){
+          if(latest_p != 0){
+              if(p->arrival_time > latest_p->arrival_time)
+                latest_p = p;
+          }
+          else
+            latest_p = p;
+      }
+    }
+    return latest_p;
+}
+
+
+void aging()
+{
+  struct proc* p;
+  for(p = ptable.proc; p != &ptable.proc[NPROC]; p++){
+      if(p -> state == RUNNABLE && p -> level == 2){
+          if(ticks - p->last_execution >= 8000)
+          {
+            p->level = 1;
+            p->last_execution = ticks;
+          }
+      }
+    }
+    
+}
+
 void
 scheduler(void)
 {
@@ -429,7 +461,7 @@ scheduler(void)
     c->proc = p;
     switchuvm(p);
     p->state = RUNNING;
-
+    p->last_execution = ticks;
     swtch(&(c->scheduler), p->context);
     switchkvm();
 

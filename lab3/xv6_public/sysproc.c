@@ -128,7 +128,7 @@ int sys_get_proc_level(void){
     return get_proc_queue_level(pid);
 }
 
-int sys_set_proc_queue(void){
+int sys_set_proc_level(void){
     int pid, target_queue;
     if(argint(0, &pid)<0 || pid<0)
         return -1;
