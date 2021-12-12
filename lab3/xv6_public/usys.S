@@ -38,4 +38,5 @@ SYSCALL(get_proc_queue_level)
 SYSCALL(set_proc_queue_level)
 SYSCALL(set_HRRN_process_level)
 SYSCALL(set_HRRN_system_level)
+SYSCALL(print_proc_data)
 
