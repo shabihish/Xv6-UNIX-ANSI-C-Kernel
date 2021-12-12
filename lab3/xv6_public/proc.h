@@ -1,4 +1,5 @@
 
+#define MAX_PRIORITY 9999999
 // Per-CPU state
 struct cpu {
   uchar apicid;                // Local APIC ID
