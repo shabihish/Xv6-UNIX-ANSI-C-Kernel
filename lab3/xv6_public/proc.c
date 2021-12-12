@@ -381,18 +381,18 @@ float get_HRRN_priority(struct proc* p){
 }
 
 struct proc* HRRN(){
-    struct proc* p,* max_p = 0;
-    float max_priority = MAX_PRIORITY;
+    struct proc* p,* min_p = 0;
+    float min_priority = MAX_PRIORITY;
 
     for(p = ptable.proc; p != &ptable.proc[NPROC]; p++){
       if(p -> state == RUNNABLE && p -> level == 3){
-        if(get_HRRN_priority(p) > max_priority){
-          max_priority = get_HRRN_priority(p);
-          max_p = p;
+        if(get_HRRN_priority(p) < min_priority){
+          min_priority = get_HRRN_priority(p);
+          min_p = p;
         }
       }
     }
-    return max_p;
+    return min_p;
 }
 
 struct proc* RR(){
@@ -461,39 +461,12 @@ scheduler(void)
      p = RR();
      if(p == 0)
        p = LCFS();
-     if(p == 0){
-//       p = HRRN();
-         release(&ptable.lock);
-          continue;}
+     if(p == 0)
+       p = HRRN();
      if(p == 0){
          release(&ptable.lock);
          continue;
      }
-//    p = HRRN();
-//    if(p->pid == 0){   // first process (not from user)
-//      cprintf("ZERO\n");
-//      release(&ptable.lock);
-//      continue;
-//    }
-//      for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
-//          if(p->state != RUNNABLE)
-//              continue;
-//
-//          // Switch to chosen process.  It is the process's job
-//          // to release ptable.lock and then reacquire it
-//          // before jumping back to us.
-//          c->proc = p;
-//          switchuvm(p);
-//          p->state = RUNNING;
-//
-//          swtch(&(c->scheduler), p->context);
-//          switchkvm();
-//
-//          // Process is done running for now.
-//          // It should have changed its p->state before coming back.
-//          c->proc = 0;
-//      }
-
 
     c->proc = p;
     switchuvm(p);
@@ -771,6 +744,8 @@ void set_proc_queue_level(int pid, int target_level){
     for(p = ptable.proc; p != &ptable.proc[NPROC]; p++)
         if(p->pid == pid){
             p->level = target_level;
+            if(target_level != 1)
+                p->last_execution = ticks;
             break;
         }
     release(&ptable.lock);
@@ -784,6 +759,8 @@ void print_proc_data(void)
     cprintf("name       pid     state       queue_level     cycle       arrival     HRNN\n");
     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++)
     {
+      if(p->pid == myproc()->pid)
+          continue;
       if(p->pid != 0){
         cprintf("%s     %d    %s    %d    %d    %d    %d\n",p->name,p->pid,states[p->state],p->level,p->exec_cycle,
                                                     p->arrival_time,p->HRRN_priority);
