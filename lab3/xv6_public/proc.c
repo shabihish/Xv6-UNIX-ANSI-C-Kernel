@@ -756,13 +756,13 @@ void print_proc_data(void)
 {
     struct proc *p;
     acquire(&ptable.lock);
-    cprintf("name       pid     state       queue_level     cycle       arrival     HRNN\n");
+    cprintf("name\t\t\t\tpid\t\tstate\t\tqueue_level\t\tcycle\t\tarrival\t\tHRNN\n");
     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++)
     {
       if(p->pid == myproc()->pid)
           continue;
       if(p->pid != 0){
-        cprintf("%s     %d    %s    %d    %d    %d    %d\n",p->name,p->pid,states[p->state],p->level,p->exec_cycle,
+        cprintf("%s\t\t\t\t%d\t\t%s\t\t%d\t\t%d\t\t%d\t\t%d\n",p->name,p->pid,states[p->state],p->level,p->exec_cycle,
                                                     p->arrival_time,p->HRRN_priority);
       }
     }
