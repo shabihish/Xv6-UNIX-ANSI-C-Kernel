@@ -347,9 +347,9 @@ void set_HRRN_process_level(int pid , int priority){
   acquire(&ptable.lock);
 
   for(p = ptable.proc; p != &ptable.proc[NPROC]; p++){
-    //cprintf("pid : %d\n", p->pid);
     if(p->pid == pid){
       p->HRRN_priority = priority;
+      cprintf("Changed HRRN priority of %d to %d\n", p->pid,p->HRRN_priority);
     }
   }
 
@@ -365,7 +365,7 @@ void set_HRRN_system_level(int priority){
     //cprintf("change\n");
     p->HRRN_priority = priority;
   }
-
+  cprintf("Changed HRRN priority of all to %d\n", priority);
   release(&ptable.lock);
 }
 
@@ -461,10 +461,9 @@ scheduler(void)
      p = RR();
      if(p == 0)
        p = LCFS();
-     if(p == 0){
-//       p = HRRN();
-         release(&ptable.lock);
-          continue;}
+     if(p == 0)
+       p = HRRN();
+      
      if(p == 0){
          release(&ptable.lock);
          continue;
@@ -781,11 +780,11 @@ void print_proc_data(void)
 {
     struct proc *p;
     acquire(&ptable.lock);
-    cprintf("name       pid     state       queue_level     cycle       arrival     HRNN\n");
+    cprintf("name\t\t\t\tpid\t\tstate\t\tqueue_level\t\tcycle\t\tarrival\t\tHRNN\n");
     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++)
     {
       if(p->pid != 0){
-        cprintf("%s     %d    %s    %d    %d    %d    %d\n",p->name,p->pid,states[p->state],p->level,p->exec_cycle,
+        cprintf("%s\t\t\t\t%d\t\t%s\t\t%d\t\t%d\t\t%d\t\t%d\n",p->name,p->pid,states[p->state],p->level,p->exec_cycle,
                                                     p->arrival_time,p->HRRN_priority);
       }
     }

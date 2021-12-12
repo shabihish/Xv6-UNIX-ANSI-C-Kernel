@@ -62,12 +62,26 @@ int sys_calculate_sum_of_digits(void){
 }
 
 void 
-sys_set_HRRN_process_level(int pid, int priority){
-  set_HRRN_process_level(pid, priority);
+sys_set_HRRN_process_level(void){
+    int pid, priority;
+    if(argint(0, &pid)<0 || pid<0){
+      cprintf("ERROR : invalid process (-1)\n");
+      return;
+    }
+    if(argint(1, &priority) <0 || priority < 0){
+      cprintf("ERROR : invalid priority (> 0)\n");
+      return;
+    }
+    set_HRRN_process_level(pid, priority);
 }
 
 void 
-sys_set_HRRN_system_level(int priority){
+sys_set_HRRN_system_level(void){
+  int priority;
+  if(argint(0, &priority)<0 || priority<0){
+      cprintf("ERROR : invalid priority (> 0)\n");
+      return;
+  }
   set_HRRN_system_level(priority);
 }
 
