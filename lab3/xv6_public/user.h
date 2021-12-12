@@ -32,6 +32,7 @@ int get_file_sectors(int fd, int* sectors, int n);
 int get_parent_pid(void);
 int get_proc_queue_level(int pid);
 int set_proc_queue_level(int pid, int target_level);
+void print_proc_data(void);
 
 // ulib.c
 int stat(const char*, struct stat*);
