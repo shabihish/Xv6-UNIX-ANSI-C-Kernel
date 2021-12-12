@@ -126,8 +126,8 @@ int             wait_sleeping(void);
 int             set_proc_tracer(void);
 int             get_proc_queue_level(int);
 void            set_proc_queue_level(int, int);
-void            set_HRRN_process_level(int pid , int priority);
-void            set_HRRN_system_level(int priority);
+void            set_HRRN_process_level(int , int);
+void            set_HRRN_system_level(int);
 void            print_proc_data(void);
 
 
