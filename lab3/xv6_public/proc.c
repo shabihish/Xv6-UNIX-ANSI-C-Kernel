@@ -439,8 +439,11 @@ void aging(void)
   for(p = ptable.proc; p != &ptable.proc[NPROC]; p++){
       if(ticks - p->last_execution >= 8000)
       {
-        p->level = 1;
-        p->last_execution = ticks;
+        if(p->level != 1)
+        { 
+          p->level--;
+          p->last_execution = ticks;
+        }
       }
     }
 }
