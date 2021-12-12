@@ -149,3 +149,8 @@ int sys_set_proc_level(void){
     set_proc_queue_level(pid, target_queue);
     return 0;
 }
+
+void sys_print_data(void){
+    print_proc_data();
+   
+}
