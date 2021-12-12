@@ -382,7 +382,7 @@ float get_HRRN_priority(struct proc* p){
 
 struct proc* HRRN(){
     struct proc* p,* min_p = 0;
-    float min_priority = 9999999;
+    float min_priority = MAX_PRIORITY;
 
     for(p = ptable.proc; p != &ptable.proc[NPROC]; p++){
       if(p -> state == RUNNABLE && p -> level == 3){
@@ -397,15 +397,16 @@ struct proc* HRRN(){
 
 struct proc* RR(){
     struct proc* p,*min_p = 0;
-    int min_priority = 9999999, max_priority = -1;
+    int min_priority = MAX_PRIORITY, max_priority = -1;
 
     for(p = ptable.proc; p != &ptable.proc[NPROC]; p++){
         if(p -> state == RUNNABLE && p -> level == 1){
-            if(p->RR_priority < min_priority){
+            p->RR_priority--;
+            if(p->RR_priority <= min_priority){
                 min_priority = p->RR_priority;
                 min_p = p;
             }
-            if(p->RR_priority > max_priority){
+            if(p->RR_priority >= max_priority){
                 max_priority = p->RR_priority;
             }
         }
@@ -750,30 +751,35 @@ int set_proc_tracer(void){
 }
 
 int get_proc_queue_level(int pid){
-    struct proc* p;
+    struct proc* p, *rp = 0;
 
-//    for(p = ptable.proc; p != &ptable.proc[NPROC]; p++) {
-//        cprintf("PID %d's level: %d\n", p->pid, p->level);
-//    }
-    for(p = ptable.proc; p != &ptable.proc[NPROC]; p++) {
-        if (p->pid == pid)
-            return p->level;
+    acquire(&ptable.lock);
+    for(p = ptable.proc; p != &ptable.proc[NPROC]; p++){
+        if (p->pid == pid){
+            rp = p;
+            break;
+        }
     }
+    release(&ptable.lock);
+    if(rp)
+        return rp->level;
     return -1;
 }
 
 void set_proc_queue_level(int pid, int target_level){
     struct proc* p;
 
+    acquire(&ptable.lock);
     for(p = ptable.proc; p != &ptable.proc[NPROC]; p++)
         if(p->pid == pid){
             p->level = target_level;
-            return;
+            break;
         }
+    release(&ptable.lock);
 }
 
 char* states[] = {"UNUSED", "EMBRYO", "SLEEPING", "RUNNABLE", "RUNNING", "ZOMBIE"};
-void print_proc_data(void) 
+void print_proc_data(void)
 {
     struct proc *p;
     acquire(&ptable.lock);
@@ -783,7 +789,7 @@ void print_proc_data(void)
       if(p->pid != 0){
         cprintf("%s     %d    %s    %d    %d    %d    %d\n",p->name,p->pid,states[p->state],p->level,p->exec_cycle,
                                                     p->arrival_time,p->HRRN_priority);
-      } 
+      }
     }
     release(&ptable.lock);
 } 
