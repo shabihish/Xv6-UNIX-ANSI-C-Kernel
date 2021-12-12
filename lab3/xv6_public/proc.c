@@ -99,7 +99,7 @@ found:
   p->last_execution = 0;
   // HRRN queue initialization
 
-  p->HRRN_priority = ticks * 100; // default unique priority (will change in relevant syscall)
+  p->HRRN_priority = ticks; // default unique priority (will change in relevant syscall)
 
   // RR queue initialization
   p->RR_priority = next_RR_priority;
