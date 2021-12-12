@@ -381,18 +381,18 @@ float get_HRRN_priority(struct proc* p){
 }
 
 struct proc* HRRN(){
-    struct proc* p,* min_p = 0;
-    float min_priority = MAX_PRIORITY;
+    struct proc* p,* max_p = 0;
+    float max_priority = MAX_PRIORITY;
 
     for(p = ptable.proc; p != &ptable.proc[NPROC]; p++){
       if(p -> state == RUNNABLE && p -> level == 3){
-        if(get_HRRN_priority(p) < min_priority){
-          min_priority = get_HRRN_priority(p);
-          min_p = p;
+        if(get_HRRN_priority(p) > max_priority){
+          max_priority = get_HRRN_priority(p);
+          max_p = p;
         }
       }
     }
-    return min_p;
+    return max_p;
 }
 
 struct proc* RR(){
