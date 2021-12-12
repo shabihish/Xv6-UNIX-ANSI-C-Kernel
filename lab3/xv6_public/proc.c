@@ -437,12 +437,10 @@ void aging(void)
 {
   struct proc* p;
   for(p = ptable.proc; p != &ptable.proc[NPROC]; p++){
-      if(p -> state == RUNNABLE /*&& p -> level == 2*/){
-          if(ticks - p->last_execution >= 8000)
-          {
-            p->level = 1;
-            p->last_execution = ticks;
-          }
+      if(ticks - p->last_execution >= 8000)
+      {
+        p->level = 1;
+        p->last_execution = ticks;
       }
     }
 }
