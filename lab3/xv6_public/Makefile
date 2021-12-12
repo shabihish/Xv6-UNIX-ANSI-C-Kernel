@@ -181,7 +181,6 @@ UPROGS=\
 	_usertests\
 	_wc\
 	_zombie\
-	_factor\
 	_set_HRRN_process_level\
 	_set_HRRN_system_level\
 	_get_file_sectors\
@@ -191,6 +190,7 @@ UPROGS=\
 	_set_proc_level\
 	_test_aging\
 	_print_data\
+	_foo\
 
 
 fs.img: mkfs README $(UPROGS)
