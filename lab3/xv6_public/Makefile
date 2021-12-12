@@ -190,6 +190,8 @@ UPROGS=\
 	_get_proc_level\
 	_set_proc_level\
 	_test_aging\
+	_print_data\
+
 
 fs.img: mkfs README $(UPROGS)
 	./mkfs fs.img README $(UPROGS)
@@ -261,7 +263,7 @@ EXTRA=\
 	ln.c ls.c mkdir.c rm.c stressfs.c usertests.c wc.c zombie.c\
 	printf.c umalloc.c test_get_parent_pid\
 	printf.c umalloc.c get_parent_pid\
-	printf.c umalloc.c calculate_sum_of_digits.c set_HRRN_process_level.c 	  set_HRRN_system_level.c\
+	printf.c umalloc.c calculate_sum_of_digits.c set_HRRN_process_level.c 	  set_HRRN_system_level.c print_data.c\
 	README dot-bochsrc *.pl toc.* runoff runoff1 runoff.list\
 	.gdbinit.tmpl gdbutil\
 
