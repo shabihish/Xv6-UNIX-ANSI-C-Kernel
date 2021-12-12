@@ -112,6 +112,7 @@ extern int sys_get_proc_level(void);
 extern int sys_set_proc_level(void);
 extern int sys_set_HRRN_process_level(void);
 extern int sys_set_HRRN_system_level(void);
+extern int sys_print_data(void);
 
 
 
@@ -146,6 +147,7 @@ static int (*syscalls[])(void) = {
 [SYS_set_proc_queue_level] sys_set_proc_level,
 [SYS_set_HRRN_process_level] sys_set_HRRN_process_level,
 [SYS_set_HRRN_system_level] sys_set_HRRN_system_level,
+[SYS_print_proc_data] sys_print_data,
 };
 
 void
