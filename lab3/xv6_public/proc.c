@@ -771,3 +771,19 @@ void set_proc_queue_level(int pid, int target_level){
             return;
         }
 }
+
+char* states[] = {"UNUSED", "EMBRYO", "SLEEPING", "RUNNABLE", "RUNNING", "ZOMBIE"};
+void print_proc_data(void) 
+{
+    struct proc *p;
+    acquire(&ptable.lock);
+    cprintf("name       pid     state       queue_level     cycle       arrival     HRNN\n");
+    for(p = ptable.proc; p < &ptable.proc[NPROC]; p++)
+    {
+      if(p->pid != 0){
+        cprintf("%s     %d    %s    %d    %d    %d    %d\n",p->name,p->pid,states[p->state],p->level,p->exec_cycle,
+                                                    p->arrival_time,p->HRRN_priority);
+      } 
+    }
+    release(&ptable.lock);
+} 
