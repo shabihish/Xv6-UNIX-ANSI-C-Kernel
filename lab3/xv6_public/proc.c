@@ -375,7 +375,7 @@ float get_HRRN_priority(struct proc* p){
   int current = ticks;
   release(&tickslock);
   float waiting_time = (float)(current - p->arrival_time);
-  cprintf("waiting time : %f\n", waiting_time);
+  //cprintf("waiting time : %f\n", waiting_time);
   float HRRN = (waiting_time + p->exec_cycle) / p->exec_cycle;
   return (HRRN + p->HRRN_priority) / 2;
 }
