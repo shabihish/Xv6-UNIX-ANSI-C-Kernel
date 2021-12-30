@@ -38,7 +38,7 @@ void test(int phnum){
       state[phnum] = 0;
       cprintf("Philosopher %d takes fork %d and %d\n",phnum + 1, left + 1, phnum + 1);
       for(int i = 0; i <= 1000000000; i++);
-      cprintf("Philosopher %d is Eating\n", phnum + 1);
+      cprintf("Philosopher %d is eating\n", phnum + 1);
       wakeup(&condition);
     }
 }
@@ -47,7 +47,7 @@ void test(int phnum){
 void take_fork(int phnum){
   if(state[phnum] != EATING){
     state[phnum] = HUNGRY;
-    cprintf("Philosopher %d is Hungry\n", phnum + 1);
+    cprintf("Philosopher %d is hungry\n", phnum + 1);
     test(phnum);
   }
 }
