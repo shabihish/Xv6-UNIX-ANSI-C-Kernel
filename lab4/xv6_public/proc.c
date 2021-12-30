@@ -16,6 +16,95 @@ struct spinlock lk = {.locked = 0};
 int state[5] = { 1, 1, 1, 1, 1 };
 int phil[5] = { 0, 1, 2, 3, 4 };
 
+
+#define Sem_Size 5
+
+
+struct waiting_proc{
+  struct proc* wproc;
+  struct waiting_proc *next;
+};
+
+struct waiting_queue{
+    int size;
+    struct waiting_proc * head;
+    struct waiting_proc * tail;
+};
+
+struct semaphore {
+  
+  int count; 
+  int init;// to check sem_init is called or not
+  struct waiting_queue queue;
+  struct spinlock lock;
+};
+
+struct semaphore sema[Sem_Size] ;
+
+int sem_init(int i, int v)
+{
+  acquire(&sema[i].lock);
+  
+     sema[i].count = v;
+     sema[i].init = 1;
+     sema[i].queue.size = 0;
+     sema[i].queue.head = 0;
+     sema[i].queue.tail = 0;
+    
+  release(&sema[i].lock);
+  
+  return 0;
+}
+
+int sem_acquire(int i){
+  if(sema[i].init == 0)
+        return 0;
+  if(sema[i].count > 0)
+  {
+    acquire(&sema[i].lock);
+    
+    sema[i].count--;
+    release(&sema[i].lock);
+    return 1;
+  }
+    acquire(&sema[i].lock);
+    struct proc *curproc = myproc();
+     struct waiting_proc p= {.next=0, .wproc=curproc};
+     if(sema[i].queue.head == 0){
+         sema[i].queue.head = &p;
+     }else{
+        sema[i].queue.tail->next = &p;
+     }
+    sema[i].queue.tail = &p;
+    sema[i].queue.size++;
+    sleep(curproc, &sema[i].lock);
+   
+    release(&sema[i].lock);
+  return -1;
+}
+
+int sem_release(int i){
+  if(sema[i].count < 0)
+  {
+    return -1;
+  }
+  acquire(&sema[i].lock);
+  sema[i].count++;
+   if(sema[i].queue.size != 0)
+   {
+     struct waiting_proc *tmp;
+    tmp = sema[i].queue.head;
+    struct proc *nproc = tmp->wproc;
+     sema[i].queue.head = sema[i].queue.head->next;
+     sema[i].queue.size++;
+  //  // free(tmp);
+     wakeup(nproc);
+   }
+  release(&sema[i].lock);
+  return 1;
+}
+
+
 void print(){
   for(int i = 0; i < 5; i++){
     cprintf("phiosopher %d : ", i + 1);

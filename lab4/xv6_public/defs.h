@@ -124,6 +124,9 @@ void            yield(void);
 int             wait_sleeping(void);
 int             set_proc_tracer(void);
 void			dining(int);
+int			    sem_init(int i , int v);
+int			    sem_acquire(int);
+int			    sem_release(int);
 
 // swtch.S
 void            swtch(struct context**, struct context*);

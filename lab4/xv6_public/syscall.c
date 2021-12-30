@@ -109,6 +109,9 @@ extern int sys_wait_sleeping(void);
 extern int sys_set_proc_tracer(void);
 extern int sys_get_parent_pid(void);
 extern int sys_dining(void);
+extern int sys_sem_init(void);
+extern int sys_sem_release(void);
+extern int sys_sem_acquire(void);
 
 
 
@@ -141,6 +144,9 @@ static int (*syscalls[])(void) = {
 [SYS_set_proc_tracer] sys_set_proc_tracer,
 [SYS_get_parent_pid] sys_get_parent_pid,
 [SYS_dining] sys_dining,
+[SYS_sem_init] sys_sem_init,
+[SYS_sem_release] sys_sem_release,
+[SYS_sem_acquire] sys_sem_acquire,
 };
 
 void

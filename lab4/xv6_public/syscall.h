@@ -26,3 +26,6 @@
 #define SYS_wait_sleeping  25
 #define SYS_set_proc_tracer  26
 #define SYS_dining 27
+#define SYS_sem_init 28
+#define SYS_sem_acquire 29
+#define SYS_sem_release 30

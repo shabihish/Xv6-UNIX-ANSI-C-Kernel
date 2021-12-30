@@ -129,3 +129,34 @@ sys_get_parent_pid(void)
 {
 	return myproc()->parent->pid;
 }
+
+int 
+sys_sem_init(void)
+{
+  int i,v;
+  if (argint(0, &i) < 0) 
+    return -1;
+  if (argint(1, &v) < 0)
+    return -1;
+  return sem_init(i, v);
+}
+
+int
+sys_sem_release(void)
+{
+  int i;
+  if (argint(0, &i) < 0)
+    return -1;
+
+  return sem_release(i);
+}
+
+int
+sys_sem_acquire(void)
+{
+  int i;
+  if (argint(0, &i) < 0)
+    return -1;
+
+  return sem_acquire(i);
+}
