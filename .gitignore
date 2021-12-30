@@ -1,3 +1,7 @@
 .idea
 /**/*.o
 /**/_*
+lab2
+lab3
+CMakeLists.txt
+cmake-build-debug
