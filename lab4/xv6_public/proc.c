@@ -78,7 +78,7 @@ int sem_acquire(int i){
     sema[i].queue.tail = &p;
     sema[i].queue.size++;
     sleep(curproc, &sema[i].lock);
-   
+    sema[i].count--;
     release(&sema[i].lock);
   return -1;
 }

@@ -9,12 +9,12 @@ int main(int argc, char *argv[]){
     }
     int i = atoi(argv[1]);
     int res = sem_release(i-1);
-    if(res>0)
-        printf(1,"process released semaphore\n");
     if(res == 0)
-    	printf(1,"this semaphore has not been initialized\n");
+        printf(1,"this semaphore has not been initialized\n");
+    else if(res>0)
+        printf(1,"process released semaphore\n");
     else
-        printf(1,"sepaphore is empty%d\n",i);
+        printf(1,"sepaphore %d is empty\n",i);
     
     exit();
 } 
