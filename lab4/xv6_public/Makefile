@@ -188,9 +188,12 @@ UPROGS=\
 	_test_get_parent_pid\
 	_get_parent_pid\
 	_dining\
+	_sem_init\
+	_sem_acquire\
+	_sem_release\
 
 fs.img: mkfs README $(UPROGS)
-	./mkfs fs.img README file1 file2 $(UPROGS)
+	./mkfs fs.img README $(UPROGS)
 
 -include *.d
 

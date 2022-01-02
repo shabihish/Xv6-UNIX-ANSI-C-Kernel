@@ -29,6 +29,9 @@ int uptime(void);
 int get_file_sectors(int fd, int* sectors, int n);
 int get_parent_pid(void);
 void dining(int);
+int sem_init(int, int);
+int sem_acquire(int);
+int sem_release(int);
 // ulib.c
 int stat(const char*, struct stat*);
 char* strcpy(char*, const char*);
