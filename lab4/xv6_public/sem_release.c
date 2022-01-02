@@ -10,7 +10,7 @@ int main(int argc, char *argv[]){
     }
     int i = atoi(argv[1]);
   
-    if(sem_release(i)>0)
+    if(sem_release(i-1)>0)
         printf(1,"process released semaphore\n");
     else
         printf(1,"sepaphore is empty%d\n",i);

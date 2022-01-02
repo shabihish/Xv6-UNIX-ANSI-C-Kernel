@@ -9,7 +9,7 @@ int main(int argc, char *argv[]){
         exit();
     }
     int i = atoi(argv[1]);
-    int result = sem_acquire(i);
+    int result = sem_acquire(i-1);
     if(result > 0)
         printf(1,"process entered to the critical section\n");
     else if(result == 0)
