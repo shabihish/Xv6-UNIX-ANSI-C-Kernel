@@ -1,4 +1,3 @@
-
 #include "types.h"
 #include "stat.h"
 #include "user.h"
@@ -9,9 +8,11 @@ int main(int argc, char *argv[]){
         exit();
     }
     int i = atoi(argv[1]);
-  
-    if(sem_release(i-1)>0)
+    int res = sem_release(i-1);
+    if(res>0)
         printf(1,"process released semaphore\n");
+    if(res == 0)
+    	printf(1,"this semaphore has not been initialized\n");
     else
         printf(1,"sepaphore is empty%d\n",i);
     
