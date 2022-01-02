@@ -84,6 +84,8 @@ int sem_acquire(int i){
 }
 
 int sem_release(int i){
+  if(sema[i].init == 0)
+        return 0;
   if(sema[i].count < 0)
   {
     return -1;
