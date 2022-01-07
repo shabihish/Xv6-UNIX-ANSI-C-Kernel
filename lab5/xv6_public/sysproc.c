@@ -120,3 +120,8 @@ sys_get_parent_pid(void)
 {
 	return myproc()->parent->pid;
 }
+
+int 
+sys_get_free_pages_count(void){
+  return get_free_pages_count();
+}

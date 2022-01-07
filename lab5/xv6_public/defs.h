@@ -123,6 +123,8 @@ void            wakeup(void*);
 void            yield(void);
 int             wait_sleeping(void);
 int             set_proc_tracer(void);
+int             get_free_pages_count(void);
+
 
 // swtch.S
 void            swtch(struct context**, struct context*);
