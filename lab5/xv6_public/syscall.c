@@ -109,6 +109,7 @@ extern int sys_wait_sleeping(void);
 extern int sys_set_proc_tracer(void);
 extern int sys_get_parent_pid(void);
 extern int sys_get_free_pages_count(void);
+extern int sys_mmap(void);
 
 
 
@@ -141,6 +142,7 @@ static int (*syscalls[])(void) = {
 [SYS_set_proc_tracer] sys_set_proc_tracer,
 [SYS_get_parent_pid] sys_get_parent_pid,
 [SYS_get_free_pages_count] sys_get_free_pages_count,
+[SYS_mmap] sys_mmap,
 };
 
 void

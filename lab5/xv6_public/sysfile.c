@@ -15,6 +15,8 @@
 #include "sleeplock.h"
 #include "file.h"
 #include "fcntl.h"
+#include "vm.h"
+
 
 // Fetch the nth word-sized system call argument as a file descriptor
 // and return both the descriptor and the corresponding struct file.
@@ -467,4 +469,71 @@ sys_get_file_sectors(void){
     if (min_end<=n-1)
         sectors[min_end]=-1;
     return 0;
+}
+
+int mmap(struct proc *curr_proc, int addr, int length, int prot, int flags, int fd, int offset) {
+    struct mmap_st *mm = 0;
+    struct file* f;
+    for (int i = 0; i < 25; i++) {
+        if (curr_proc->mm[i].valid == 0) {
+            mm = &curr_proc->mm[i];
+            break;
+        }
+    }
+
+
+    uint sz = PGROUNDUP(curr_proc->sz);
+//    cprintf("curr_proc sz: %d\n", curr_proc->sz);
+//    cprintf("sz: %d\n", sz);
+    uint start = sz;
+
+    uint new_sz = PGROUNDUP(sz + length);
+//    cprintf("new_sz: %d\n", new_sz);
+//    cprintf("After sz: %d\n", sz);
+
+    int ad = allocuvm(curr_proc->pgdir, sz, new_sz);
+    if(ad==0)
+        return -9;
+
+    if (!mm)
+        return -4;
+
+    mm->valid = 1;
+    mm->start = start;
+    mm->end = new_sz;
+    mm->length = new_sz - sz;
+    mm->prot = prot;
+    mm->flags = flags;
+    mm->fd = fd;
+    mm->f = curr_proc->ofile[fd];
+    mm->f->ip->ref++;
+    curr_proc->sz = new_sz;
+    return start;
+}
+
+int sys_mmap(void){
+    int addr;
+    int length;
+    int prot, flags, fd, offset;
+
+    if (argint(0, &addr) < 0 || argint(1, &length) < 0 || argint(2, &prot) < 0 ||
+        argint(3, &flags) < 0 || argint(5, &fd) < 0 || argint(6, &offset) < 0) {
+        return -1;
+    }
+
+    if (flags != MAP_PRIVATE) {
+        return -2;
+    }
+
+//    addr = PGROUNDUP(addr)
+
+    return mmap(myproc(), addr, length, prot, flags, fd, offset);
+}
+int mmap_read(struct file *f, int va, int off, int size) {
+    ilock(f->ip);
+    // read to user space VA.
+    int n = readi(f->ip, va, off, size);
+    off+=n;
+    iunlock(f->ip);
+    return off;
 }

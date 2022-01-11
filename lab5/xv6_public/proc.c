@@ -81,7 +81,6 @@ allocproc(void)
   for(p = ptable.proc; p < &ptable.proc[NPROC]; p++)
     if(p->state == UNUSED)
       goto found;
-
   release(&ptable.lock);
   return 0;
 
@@ -101,6 +100,10 @@ found:
   // Leave room for trap frame.
   sp -= sizeof *p->tf;
   p->tf = (struct trapframe*)sp;
+
+  for(int i=0;i<25;i++){
+      p->mm[i].valid=0;
+  }
 
   // Set up new context to start executing at forkret,
   // which returns to trapret.

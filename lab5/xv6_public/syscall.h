@@ -26,4 +26,5 @@
 #define SYS_wait_sleeping  25
 #define SYS_set_proc_tracer  26
 #define SYS_get_free_pages_count 27
+#define SYS_mmap 28
 

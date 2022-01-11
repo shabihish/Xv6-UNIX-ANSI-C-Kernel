@@ -1,3 +1,5 @@
+#include "types.h"
+
 struct stat;
 struct rtcdate;
 
@@ -29,6 +31,7 @@ int uptime(void);
 int get_file_sectors(int fd, int* sectors, int n);
 int get_parent_pid(void);
 int get_free_pages_count(void);
+int mmap(int addr, int length, int prot, int flags, int fd, int offset);
 
 // ulib.c
 int stat(const char*, struct stat*);
