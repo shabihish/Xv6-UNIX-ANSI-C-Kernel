@@ -10,10 +10,9 @@ int main(){
     printf(1, "%d\n", addr);
 
     char *a = (char*)addr;
-//    *a = '1';
-    printf(1, "%s", a);
-    printf(1, "%s", a);
+    *a = '1';
+//    printf(1, "%s", a);
+//    printf(1, "%s", a);
     exit();
-
 
 }

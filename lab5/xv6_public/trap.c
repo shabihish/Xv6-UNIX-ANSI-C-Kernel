@@ -88,13 +88,14 @@ trap(struct trapframe *tf) {
                 mm = &p->mm[i];
                 break;
             }
-
+            cprintf("AA\n");
             if (!mm) {
                 cprintf("MM not allocated.\n");
                 myproc()->killed = 1;
                 break;
             }
 
+            cprintf("BB\n");
             int sz;
             if ((sz = allocuvm(p->pgdir, mm->start, mm->end)) == 0) {
                 cprintf("MM not allocated.\n");
@@ -102,13 +103,24 @@ trap(struct trapframe *tf) {
                 break;
             }
 
-            char* ad = (char*)mm->start;
+//            char* ad = (char*)mm->start;
+            char* ad = 0;
+//            memset(ad, 0, mm->length);
+            cprintf("CC\n");
+//            cprintf("CC %s\n", );
 
-            if(fileread(mm->f, ad + mm->start, mm->length)!=mm->length){
+            if(fileread(mm->f, (void*)mm->start, mm->length)!=mm->length){
+                cprintf("EE\n");
                 cprintf("MM not allocated.\n");
                 myproc()->killed = 1;
                 break;
             }
+
+//            *ad='a';
+//            cprintf("len: %d\n", mm->length);
+//            cprintf("cont: %d\n", fileread(mm->f, (void*)mm->start, mm->length));
+            cprintf("DD\n");
+            break;
         }
 
 
