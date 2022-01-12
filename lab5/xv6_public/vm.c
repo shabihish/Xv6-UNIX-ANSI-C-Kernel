@@ -283,14 +283,13 @@ freevm(pde_t *pgdir, struct proc *p) {
     if (pgdir == 0)
         panic("freevm: no pgdir");
 
-    cprintf("BBBBB\n");
     if(p){
         for(int j=0;j<8;j++){
             if(p->mm[j].valid==0)
                 continue;
 
         p->mm[j].f->ip->ref--;
-        cprintf("from freevm: pid: %d, ref: %d\n",p->pid, p->mm[j].f->ref);
+//        cprintf("from freevm: pid: %d, ref: %d\n",p->pid, p->mm[j].f->ref);
         }
     }
 

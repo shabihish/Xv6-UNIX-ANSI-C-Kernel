@@ -97,26 +97,30 @@ trap(struct trapframe *tf) {
 
             cprintf("BB\n");
             int sz;
-
-            // For page allocation
             if ((sz = allocuvm(p->pgdir, mm->start, mm->end)) == 0) {
                 cprintf("MM not allocated.\n");
                 myproc()->killed = 1;
                 break;
             }
 
-            // Only for 0 initialization
-            memset(mm->start, 0, mm->end - mm->start);
+            memset(mm->start, 0, mm->end-mm->start);
 
+//            char* ad = (char*)mm->start;
+            char* ad = 0;
+//            memset(ad, 0, mm->length);
             cprintf("CC\n");
+//            cprintf("CC %s\n", );
 
-            if(fileread(mm->f, (void*)mm->start, mm->length)!=mm->length){
+            if(fileread(mm->f, (void*)mm->start, mm->length)<=0){
                 cprintf("EE\n");
                 cprintf("MM not allocated.\n");
                 myproc()->killed = 1;
                 break;
             }
 
+//            *ad='a';
+//            cprintf("len: %d\n", mm->length);
+//            cprintf("cont: %d\n", fileread(mm->f, (void*)mm->start, mm->length));
             cprintf("DD\n");
             break;
         }
