@@ -480,9 +480,25 @@ int mmap(struct proc *curr_proc, int addr, int length, int prot, int flags, int 
         }
     }
 
+    uint start, end;
+    if(get_mmaped_mem(f->ip->inum, &f, &start, &end, &length, &fd)>=0){
+        mm->valid = 1;
+        mm->start = start;
+        mm->end = end;
+        mm->length = length;
+        mm->prot = prot;
+        mm->flags = flags;
+        mm->fd = fd;
+        mm->f = f;
+        mm->f->ip->ref++;
+        cprintf("WWWWWW %d\n", mm->f->ip->ref);
+        curr_proc->sz += end - start;
 
-    uint start = PGROUNDUP(curr_proc->mmap_start);
-    uint end = PGROUNDUP(start + length);
+        return start;
+    }
+
+    start = PGROUNDUP(curr_proc->mmap_start);
+    end = PGROUNDUP(start + length);
 
     if (!mm)
         return 0;
@@ -516,6 +532,8 @@ int sys_mmap(void){
     if (flags != MAP_PRIVATE) {
         return -2;
     }
+
+    cprintf("inode id: %d\n", f->ip->inum);
 
 //    addr = PGROUNDUP(addr)
 

@@ -10,9 +10,12 @@ int main(){
         int addr = mmap(0, 10, 0, 0, fd, 0);
         printf(1, "%d\n", addr);
 
+
+
         char *a = (char*)addr;
         *a = '0';
 
+        sleep(100);
         printf(1, "%s\n", a);
         exit();
     }

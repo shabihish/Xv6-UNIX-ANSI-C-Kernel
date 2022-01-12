@@ -289,7 +289,7 @@ freevm(pde_t *pgdir, struct proc *p) {
             if(p->mm[j].valid==0)
                 continue;
 
-        p->mm[j].f->ref--;
+        p->mm[j].f->ip->ref--;
         cprintf("from freevm: pid: %d, ref: %d\n",p->pid, p->mm[j].f->ref);
         }
     }

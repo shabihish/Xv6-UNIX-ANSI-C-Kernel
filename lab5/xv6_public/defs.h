@@ -124,6 +124,7 @@ void            yield(void);
 int             wait_sleeping(void);
 int             set_proc_tracer(void);
 int             get_free_pages_count(void);
+int get_mmaped_mem(int inum, struct file** f, int *start, int *end, int *length, int *fd);
 
 
 // swtch.S

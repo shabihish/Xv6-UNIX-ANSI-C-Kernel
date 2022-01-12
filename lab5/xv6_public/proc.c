@@ -5,7 +5,11 @@
 #include "mmu.h"
 #include "x86.h"
 #include "proc.h"
+#include "fs.h"
 #include "spinlock.h"
+#include "sleeplock.h"
+#include "file.h"
+#include "fcntl.h"
 
 struct {
   struct spinlock lock;
@@ -590,6 +594,28 @@ int set_proc_tracer(void){
             p->tracer = myproc();
             release(&ptable.lock);
             return pid;
+        }
+    }
+    release(&ptable.lock);
+    return -1;
+}
+
+int get_mmaped_mem(int inum, struct file** f, int *start, int *end, int *length, int *fd){
+    acquire(&ptable.lock);
+    struct proc *p;
+    for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+        for (int i = 0; i < 8; i++) {
+            if (p->mm[i].valid == 1) {
+                if(p->mm[i].f->ip->inum == inum){
+                    *start = p->mm[i].start;
+                    *end = p->mm[i].end;
+                    *length = p->mm[i].length;
+//                    *fd = p->mm[i].fd;
+//                    *f = p->mm[i].f;
+                    release(&ptable.lock);
+                    return 0;
+                }
+            }
         }
     }
     release(&ptable.lock);
