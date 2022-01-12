@@ -453,7 +453,7 @@ sys_get_file_sectors(void){
     int n;
 
     if(argfd(0, &fd, &f) < 0 || argint(2, &n)<0|| argptr(1, &tmp, n)<0)
-        return -1;
+        return 0;
     int* sectors = (int*) tmp;
 
     int blkcnt = f->ip->size/BSIZE + (f->ip->size%BSIZE ? 1 : 0);
@@ -473,7 +473,7 @@ sys_get_file_sectors(void){
 
 int mmap(struct proc *curr_proc, int addr, int length, int prot, int flags, int fd, struct file* f, int offset) {
     struct mmap_st *mm = 0;
-    for (int i = 0; i < 25; i++) {
+    for (int i = 0; i < 8; i++) {
         if (curr_proc->mm[i].valid == 0) {
             mm = &curr_proc->mm[i];
             break;
@@ -481,32 +481,24 @@ int mmap(struct proc *curr_proc, int addr, int length, int prot, int flags, int 
     }
 
 
-    uint sz = PGROUNDUP(curr_proc->sz);
-//    cprintf("curr_proc sz: %d\n", curr_proc->sz);
-//    cprintf("sz: %d\n", sz);
-    uint start = sz;
-
-    uint new_sz = PGROUNDUP(sz + length);
-//    cprintf("new_sz: %d\n", new_sz);
-//    cprintf("After sz: %d\n", sz);
-
-//    int ad = allocuvm(curr_proc->pgdir, sz, new_sz);
-//    if(ad==0)
-//        return -9;
+    uint start = PGROUNDUP(curr_proc->mmap_start);
+    uint end = PGROUNDUP(start + length);
 
     if (!mm)
-        return -4;
+        return 0;
 
     mm->valid = 1;
     mm->start = start;
-    mm->end = new_sz;
+    mm->end = end;
     mm->length = length;
     mm->prot = prot;
     mm->flags = flags;
     mm->fd = fd;
     mm->f = f;
-    mm->f->ip->ref++;
-    curr_proc->sz = new_sz;
+    mm->f->ref++;
+    cprintf("FFFFFF %d\n", mm->f->ip->ref);
+    curr_proc->sz += end - start;
+
     return start;
 }
 

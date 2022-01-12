@@ -101,9 +101,10 @@ found:
   sp -= sizeof *p->tf;
   p->tf = (struct trapframe*)sp;
 
-  for(int i=0;i<25;i++){
+  for(int i=0;i<8;i++){
       p->mm[i].valid=0;
   }
+  p->mmap_start = 0x40000000;
 
   // Set up new context to start executing at forkret,
   // which returns to trapret.
@@ -293,7 +294,7 @@ wait(void)
         pid = p->pid;
         kfree(p->kstack);
         p->kstack = 0;
-        freevm(p->pgdir);
+        freevm(p->pgdir, p);
         p->pid = 0;
         p->parent = 0;
         p->name[0] = 0;

@@ -79,7 +79,7 @@ trap(struct trapframe *tf) {
             struct proc *p = myproc();
             struct mmap_st *mm = 0;
 
-            for (int i = 0; i < 25; i++) {
+            for (int i = 0; i < 8; i++) {
                 if (p->mm[i].valid == 0)
                     continue;
                 if (p->mm[i].start != addr)
@@ -97,17 +97,18 @@ trap(struct trapframe *tf) {
 
             cprintf("BB\n");
             int sz;
+
+            // For page allocation
             if ((sz = allocuvm(p->pgdir, mm->start, mm->end)) == 0) {
                 cprintf("MM not allocated.\n");
                 myproc()->killed = 1;
                 break;
             }
 
-//            char* ad = (char*)mm->start;
-            char* ad = 0;
-//            memset(ad, 0, mm->length);
+            // Only for 0 initialization
+            memset(mm->start, 0, mm->end - mm->start);
+
             cprintf("CC\n");
-//            cprintf("CC %s\n", );
 
             if(fileread(mm->f, (void*)mm->start, mm->length)!=mm->length){
                 cprintf("EE\n");
@@ -116,9 +117,6 @@ trap(struct trapframe *tf) {
                 break;
             }
 
-//            *ad='a';
-//            cprintf("len: %d\n", mm->length);
-//            cprintf("cont: %d\n", fileread(mm->f, (void*)mm->start, mm->length));
             cprintf("DD\n");
             break;
         }
