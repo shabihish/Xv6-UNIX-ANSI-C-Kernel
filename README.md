@@ -4,7 +4,7 @@
 
 ## Introduction
 
-Welcome to the Xv6-Kernel repository! This project is a customized version of the xv6 operating system with added extra features. xv6 is a modern re-implementation of the Unix Version 6 (v6) operating system developed as a teaching operating system for MIT's operating systems course. This repository builds upon the original xv6 by adding enhancements and new functionalities.
+Welcome to the Xv6-Kernel repository! This project is a customized version of the xv6 operating system with added extra features. xv6 is a modern re-implementation of the Unix Version 6 (v6) operating system, adding enhancements and new functionalities.
 
 ## Features
 
