@@ -1,10 +1,10 @@
 # Xv6-Kernel
 
-![Languages](https://img.shields.io/github/languages/top/shabihish/Xv6-Kernel)
+![Languages](https://img.shields.io/github/languages/top/shabihish/Xv6-UNIX-ANSI-C-Kernel)
 
 ## Introduction
 
-Welcome to the Xv6-Kernel repository! This project is a customized version of the xv6 operating system with added extra features. xv6 is a modern re-implementation of the Unix Version 6 (v6) operating system, adding enhancements and new functionalities.
+This project is a modern re-implementation of the Unix Version 6 (v6) operating system, adding enhancements and new functionalities.
 
 ## Features
 
