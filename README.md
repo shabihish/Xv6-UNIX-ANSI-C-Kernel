@@ -1,6 +1,6 @@
 # Xv6-Kernel
 
-![Languages]([https://img.shields.io/github/languages/top/shabihish/Xv6-UNIX-ANSI-C-Kernel](https://img.shields.io/github/languages/count/shabihish/Xv6-UNIX-ANSI-C-Kernel))
+![Languages](https://img.shields.io/github/languages/count/shabihish/Xv6-UNIX-ANSI-C-Kernel)
 ![Languages](https://img.shields.io/github/languages/top/shabihish/Xv6-UNIX-ANSI-C-Kernel)
 
 ## Introduction
